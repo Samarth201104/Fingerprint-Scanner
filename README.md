@@ -2,12 +2,12 @@ A comprehensive fingerprint image processing pipeline that enhances and processe
 
 ## 📋 Project Overview
 
-Fingerprint_3 is a Python-based image processing system designed to process fingerprint images through a sophisticated pipeline. It takes raw fingerprint images as input and produces enhanced, processed fingerprint images suitable for further analysis or biometric applications.
+Fingerprint-Scanner is a Python-based image processing system designed to process fingerprint images through a sophisticated pipeline. It takes raw fingerprint images as input and produces enhanced, processed fingerprint images suitable for further analysis or biometric applications.
 
 ## 🏗️ Project Structure
 
 ```
-Fingerprint_3/
+Fingerprint-Scanner/
 ├── .git/                            # Git version control
 ├── .gitignore                       # Git ignore rules
 ├── main.py                          # Main entry point for the application
@@ -87,7 +87,7 @@ The application processes fingerprint images through the following stages:
 
 1. Clone or navigate to the project directory:
    ```bash
-   cd Fingerprint_3
+   cd Fingerprint-Scanner
    ```
 
 2. Create a virtual environment (optional but recommended):
