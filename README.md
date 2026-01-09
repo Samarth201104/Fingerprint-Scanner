@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Fingerprint_3
-
 A comprehensive fingerprint image processing pipeline that enhances and processes fingerprint images through multiple stages of image analysis and improvement.
 
 ## 📋 Project Overview
@@ -233,22 +230,4 @@ output/
 - **Filtering**: Uses Gabor filters for ridge-oriented enhancement
 - **Thresholding**: Adaptive thresholding for robust binarization
 
-## 📝 License
 
-[Add license information if applicable]
-
-## 👤 Author
-
-[Add author information if applicable]
-
-## 📞 Support
-
-For issues or questions, please refer to the project documentation or contact the development team.
-
----
-
-**Last Updated**: January 2026
-=======
-# Fingerprint-Scanner
-New Repo
->>>>>>> 7704ace831c9fa2ada515299ad18b24fb6cdab21
