@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Fingerprint_3
 
 A comprehensive fingerprint image processing pipeline that enhances and processes fingerprint images through multiple stages of image analysis and improvement.
@@ -247,3 +248,7 @@ For issues or questions, please refer to the project documentation or contact th
 ---
 
 **Last Updated**: January 2026
+=======
+# Fingerprint-Scanner
+New Repo
+>>>>>>> 7704ace831c9fa2ada515299ad18b24fb6cdab21
