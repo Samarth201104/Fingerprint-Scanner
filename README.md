@@ -10,7 +10,9 @@ Fingerprint-Scanner is a Python-based image processing system designed to proces
 Fingerprint-Scanner/
 ├── .git/                            # Git version control
 ├── .gitignore                       # Git ignore rules
-├── main.py                          # Main entry point for the application
+├── main.py                          # Main entry point for CLI processing
+├── app.py                           # Gradio web interface for fingerprint processing
+├── stream_app.py                    # Streamlit web interface for fingerprint processing
 ├── requirements.txt                 # Python package dependencies
 ├── README.md                        # Project documentation
 ├── venv/                            # Virtual environment (not tracked)
@@ -32,6 +34,9 @@ Fingerprint-Scanner/
 │   ├── finger2.jpg                 # Processed sample 2
 │   ├── Fingers_test/               # Processed test dataset
 │   └── Samarth/                    # Processed sample dataset
+│
+├── temp_output/                     # Temporary output folder for web interfaces
+│   └── output.png                  # Processed images from web applications
 │
 ├── pipeline/                        # Core image processing modules
 │   ├── __init__.py                 # Package initializer
@@ -113,17 +118,20 @@ The application processes fingerprint images through the following stages:
 
 ## 💻 Usage
 
-### Process a Single Image
+### Option 1: Command-Line Interface (CLI)
+Process images via terminal using `main.py`:
+
+**Process a Single Image:**
 ```bash
 python main.py input/path/to/image.jpg
 ```
 
-### Process All Images in a Folder
+**Process All Images in a Folder:**
 ```bash
 python main.py input/folder_name
 ```
 
-### Examples
+**CLI Examples:**
 ```bash
 # Process a single fingerprint image
 python main.py input/Samarth/finger.jpg
@@ -134,6 +142,25 @@ python main.py input/Fingers_test
 # Process all images in the Samarth folder
 python main.py input/Samarth
 ```
+
+### Option 2: Gradio Web Interface
+Run the interactive Gradio web application:
+```bash
+python app.py
+```
+- Launches a browser-based interface for single image processing
+- Upload images and view results in real-time
+- Processed output saved to `temp_output/`
+
+### Option 3: Streamlit Web Interface
+Run the Streamlit web application:
+```bash
+streamlit run stream_app.py
+```
+- Lightweight web interface for fingerprint processing
+- Upload images and visualize enhancement pipeline
+- Real-time processing and display of results
+- Processed output saved to `temp_output/`
 
 ### Supported Image Formats
 - `.jpg` / `.jpeg`
@@ -153,10 +180,12 @@ python main.py input/Samarth
 | `.gitignore` | Specifies files and directories to ignore in version control |
 | `requirements.txt` | Lists all Python package dependencies |
 
-### Main Application
+### Main Applications
 | File | Purpose |
 |------|---------|
-| `main.py` | Application entry point; handles CLI arguments and orchestrates the processing pipeline |
+| `main.py` | CLI entry point; handles file path arguments and orchestrates the processing pipeline |
+| `app.py` | Gradio web interface; provides browser-based UI for single image processing |
+| `stream_app.py` | Streamlit web interface; provides interactive web application for fingerprint enhancement |
 
 ### Pipeline Modules (`pipeline/`)
 | File | Purpose |
