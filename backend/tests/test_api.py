@@ -30,6 +30,12 @@ def test_health_endpoint():
     assert response.json()["data"]["status"] == "healthy"
 
 
+def test_cors_allows_next_dev_server_on_port_3001():
+    response = request("GET", "/api/v1/health", headers={"Origin": "http://localhost:3001"})
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://localhost:3001"
+
+
 def test_invalid_upload_has_structured_error():
     response = request("POST", "/api/v1/fingerprint/process", files={"file": ("bad.png", b"not an image", "image/png")})
     assert response.status_code == 422

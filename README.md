@@ -87,7 +87,7 @@ Open <http://localhost:3000>. Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local`
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Frontend backend base URL |
-| `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
+| `CORS_ORIGINS` | localhost and 127.0.0.1 on ports 3000 and 3001 | Comma-separated allowed browser origins |
 | `MAX_UPLOAD_BYTES` | `12582912` | Per-image upload size limit |
 | `FINGERPRINT_DATA_DIR` | `backend/data/jobs` | Runtime result storage root |
 
