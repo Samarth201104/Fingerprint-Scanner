@@ -1,20 +1,41 @@
+# Python environments and generated files
 .venv/
 venv/
+env/
 __pycache__/
-*.pyc
+*.py[cod]
+*.class
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local environment and secrets
 .env
 .env.*
 !.env.example
-.next/
-.turbo/
-node_modules/
-.npm-cache/
-frontend/.env.local
+!.env.*.example
+
+# Runtime fingerprint images and processing outputs
+backend/data/
 input/
 output/
 temp_output/
-data/
-backend/data/
+
+# Node.js / Next.js generated files
+**/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.turbo/
+frontend/coverage/
+*.tsbuildinfo
+.npm-cache/
+
+# Logs and OS/editor files
 *.log
-*.tsbuildinfo\n
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
