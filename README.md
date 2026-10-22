@@ -1,262 +1,122 @@
-A comprehensive fingerprint image processing pipeline that enhances and processes fingerprint images through multiple stages of image analysis and improvement.
+# Fingerprint Scanner AI
 
-## 📋 Project Overview
+Fingerprint Scanner AI is a local full-stack computer vision workspace for fingerprint image acquisition and ridge enhancement. It offers a Next.js / React / TypeScript interface and a FastAPI backend that reuses this repository's OpenCV pipeline.
 
-Fingerprint-Scanner is a Python-based image processing system designed to process fingerprint images through a sophisticated pipeline. It takes raw fingerprint images as input and produces enhanced, processed fingerprint images suitable for further analysis or biometric applications.
+> This is a camera-based fingerprint image acquisition and enhancement system. A regular webcam is not a certified biometric scanner or authentication device.
 
-## 🏗️ Project Structure
+## Features
 
-```
-Fingerprint-Scanner/
-├── .git/                            # Git version control
-├── .gitignore                       # Git ignore rules
-├── main.py                          # Main entry point for CLI processing
-├── app.py                           # Gradio web interface for fingerprint processing
-├── stream_app.py                    # Streamlit web interface for fingerprint processing
-├── requirements.txt                 # Python package dependencies
-├── README.md                        # Project documentation
-├── venv/                            # Virtual environment (not tracked)
-│
-├── input/                           # Input folder for raw fingerprint images
-│   ├── finger1.jpg                 # Sample fingerprint image 1
-│   ├── finger2.jpg                 # Sample fingerprint image 2
-│   ├── Fingers_test/               # Test dataset folder
-│   └── Samarth/                    # Sample dataset folder
-│
-├── output/                          # Output folder for processed images
-│   ├── 01_roi.png                  # ROI extraction output
-│   ├── 02_gray.png                 # Grayscale conversion output
-│   ├── 03_normalized.png           # Normalized image output
-│   ├── 04_gabor_energy.png         # Gabor filter output
-│   ├── 06_binary.png               # Thresholding output
-│   ├── final_fingerprint.png       # Final processed fingerprint
-│   ├── finger1.jpg                 # Processed sample 1
-│   ├── finger2.jpg                 # Processed sample 2
-│   ├── Fingers_test/               # Processed test dataset
-│   └── Samarth/                    # Processed sample dataset
-│
-├── temp_output/                     # Temporary output folder for web interfaces
-│   └── output.png                  # Processed images from web applications
-│
-├── pipeline/                        # Core image processing modules
-│   ├── __init__.py                 # Package initializer
-│   ├── acquisition.py              # Image loading functionality
-│   ├── roi_extraction.py           # Region of Interest (ROI) extraction
-│   ├── preprocessing.py            # Image preprocessing and normalization
-│   ├── gabor_enhancement.py        # Gabor filter ridge enhancement
-│   ├── thresholding.py             # Adaptive thresholding
-│   ├── ridge_postprocess.py        # Post-processing for ridge enhancement
-│   └── __pycache__/                # Python cache (not tracked)
-│
-└── utils/                           # Utility modules
-    ├── __init__.py                 # Package initializer
-    ├── io_utils.py                 # Input/Output utilities
-    └── __pycache__/                # Python cache (not tracked)
+- Browser camera capture with permission/error handling, camera selection, retake, and mobile-facing camera preference.
+- Single image upload with drag/drop and JPG, JPEG, PNG, BMP, and WEBP support.
+- Batch and folder input with independent per-file results and ZIP download.
+- Original, ROI, normalized, Gabor enhanced, binary, and final output previews/downloads.
+- Shared processing service for the HTTP API and CLI.
+- Image quality indicators for dimensions, blur, contrast, brightness, and warnings.
+
+## Stack and architecture
+
+- Frontend: Next.js App Router, React, TypeScript, CSS design system.
+- Backend: Python, FastAPI, Pydantic, OpenCV, NumPy.
+- Existing algorithms retained: contour ROI extraction, CLAHE preprocessing, 16-angle Gabor response bank, adaptive thresholding, and morphological cleanup.
+
+```mermaid
+flowchart TD
+    A[User] --> B[Next.js Frontend]
+    B --> C{Input Mode}
+    C --> D[Webcam / Mobile Camera]
+    C --> E[Single Image]
+    C --> F[Multiple Images / Folder]
+    D --> G[FastAPI]
+    E --> G
+    F --> G
+    G --> H[Fingerprint Service]
+    H --> I[Validation]
+    I --> J[ROI Extraction]
+    J --> K[CLAHE Preprocessing]
+    K --> L[Gabor Enhancement]
+    L --> M[Adaptive Thresholding]
+    M --> N[Morphological Ridge Cleanup]
+    N --> O[Results and Downloads]
+    O --> B
 ```
 
-## 🔄 Processing Pipeline
+## Repository structure
 
-The application processes fingerprint images through the following stages:
+```text
+backend/app/       FastAPI routes, services, schemas, config, validation
+backend/pipeline/  Preserved OpenCV processing stages
+backend/utils/     Image I/O helpers
+backend/tests/     API and CV pipeline tests
+backend/docs/      Backend API, architecture, and pipeline documentation
+backend/cli.py     CLI using the shared service
+backend/requirements*.txt  Backend and test dependencies
+frontend/src/      Next.js pages, reusable components, API client, types
+backend/data/jobs/ Runtime processing artifacts, excluded from Git
+```
 
-1. **Acquisition** (`acquisition.py`)
-   - Loads fingerprint images from disk using OpenCV
-   - Supports multiple image formats (JPG, JPEG, PNG, BMP)
+## Local setup
 
-2. **ROI Extraction** (`roi_extraction.py`)
-   - Extracts the Region of Interest from the fingerprint image
-   - Focuses processing on relevant areas
+Requires Python 3.10+ and Node.js 20.9+. The frontend uses Next.js 16.4 and React 19.3. No Docker is required.
 
-3. **Preprocessing** (`preprocessing.py`)
-   - Normalizes image data
-   - Prepares image for enhancement filters
+### Backend
 
-4. **Gabor Enhancement** (`gabor_enhancement.py`)
-   - Applies Gabor filter for ridge enhancement
-   - Improves fingerprint ridge clarity and visibility
-
-5. **Adaptive Thresholding** (`thresholding.py`)
-   - Converts grayscale image to binary
-   - Uses adaptive thresholding for better ridge definition
-
-6. **Ridge Postprocessing** (`ridge_postprocess.py`)
-   - Further enhances ridge patterns
-   - Final image refinement and cleanup
-
-## 🚀 Installation
-
-### Prerequisites
-- Python 3.7 or higher
-- pip (Python package manager)
-
-### Setup
-
-1. Clone or navigate to the project directory:
-   ```bash
-   cd Fingerprint-Scanner
-   ```
-
-2. Create a virtual environment (optional but recommended):
-   ```bash
-   python -m venv venv
-   # On Windows:
-   venv\Scripts\activate
-   # On macOS/Linux:
-   source venv/bin/activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## 📦 Dependencies
-
-- **opencv-python** - Image processing and computer vision
-- **numpy** - Numerical computing and array operations
-- **scipy** - Scientific computing and signal processing
-- **scikit-image** - Image processing algorithms
-
-## 💻 Usage
-
-### Option 1: Command-Line Interface (CLI)
-Process images via terminal using `main.py`:
-
-**Process a Single Image:**
 ```bash
-python main.py input/path/to/image.jpg
+py -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
+.\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --reload --port 8000
 ```
 
-**Process All Images in a Folder:**
+Health check: <http://localhost:8000/api/v1/health>. OpenAPI docs: <http://localhost:8000/docs>.
+
+### Frontend
+
 ```bash
-python main.py input/folder_name
+cd frontend
+npm install
+Copy-Item .env.example .env.local   # PowerShell; use cp on macOS/Linux
+npm run dev
 ```
 
-**CLI Examples:**
+Open <http://localhost:3000>. Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` to the backend URL when it differs from `http://localhost:8000`. Browser camera access requires localhost or HTTPS and user permission.
+
+### Environment variables
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Frontend backend base URL |
+| `CORS_ORIGINS` | `http://localhost:3000` | Comma-separated allowed browser origins |
+| `MAX_UPLOAD_BYTES` | `12582912` | Per-image upload size limit |
+| `FINGERPRINT_DATA_DIR` | `backend/data/jobs` | Runtime result storage root |
+
+## API
+
+See [backend/docs/api.md](backend/docs/api.md). Main endpoints:
+
+- `GET /api/v1/health`
+- `POST /api/v1/fingerprint/process` (`file`, optional `input_mode`)
+- `POST /api/v1/fingerprint/validate` (`file`)
+- `POST /api/v1/fingerprint/process-batch` (`files`, max 50)
+- `GET /api/v1/fingerprint/result/{job_id}`
+- `GET /api/v1/fingerprint/image/{job_id}/{stage}`
+- `GET /api/v1/fingerprint/download/{job_id}/{stage}`
+
+Responses use `{success, message, data}` on success and `{success, message, error_code}` for errors. Per-image upload limit is 12 MB. Batch failures are isolated per file.
+
+## CLI
+
+The CLI calls the same processing service used by FastAPI:
+
 ```bash
-# Process a single fingerprint image
-python main.py input/Samarth/finger.jpg
-
-# Process all images in the Fingers_test folder
-python main.py input/Fingers_test
-
-# Process all images in the Samarth folder
-python main.py input/Samarth
+python -m backend.cli path/to/fingerprint.jpg
+python -m backend.cli path/to/fingerprint-folder --output backend/data/outputs
 ```
 
-### Option 2: Gradio Web Interface
-Run the interactive Gradio web application:
-```bash
-python app.py
-```
-- Launches a browser-based interface for single image processing
-- Upload images and view results in real-time
-- Processed output saved to `temp_output/`
+Use any local image or folder path. CLI outputs are placed under `backend/data/outputs/` by default; use `--output` to choose another folder. API processing jobs are saved under `backend/data/jobs/`. These runtime folders are created on demand and ignored by Git.
 
-### Option 3: Streamlit Web Interface
-Run the Streamlit web application:
-```bash
-streamlit run stream_app.py
-```
-- Lightweight web interface for fingerprint processing
-- Upload images and visualize enhancement pipeline
-- Real-time processing and display of results
-- Processed output saved to `temp_output/`
+## Testing and verification
 
-### Supported Image Formats
-- `.jpg` / `.jpeg`
-- `.png`
-- `.bmp`
+Install test dependencies with `.\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt -r backend/requirements-dev.txt` and run `.\.venv\Scripts\python.exe -m pytest backend/tests`. Frontend production build: `cd frontend && npm run build`. API smoke check: start Uvicorn, then request `GET /api/v1/health`.
 
-### Output
-- Processed images are saved to the `output/` directory
-- Folder structure is automatically created to mirror the input structure
-- Output files retain the same filename as input files
+## Limitations and future work
 
-## 📝 File Descriptions
-
-### Configuration Files
-| File | Purpose |
-|------|---------|
-| `.gitignore` | Specifies files and directories to ignore in version control |
-| `requirements.txt` | Lists all Python package dependencies |
-
-### Main Applications
-| File | Purpose |
-|------|---------|
-| `main.py` | CLI entry point; handles file path arguments and orchestrates the processing pipeline |
-| `app.py` | Gradio web interface; provides browser-based UI for single image processing |
-| `stream_app.py` | Streamlit web interface; provides interactive web application for fingerprint enhancement |
-
-### Pipeline Modules (`pipeline/`)
-| File | Purpose |
-|------|---------|
-| `acquisition.py` | Loads fingerprint images from file paths using OpenCV |
-| `roi_extraction.py` | Extracts the Region of Interest (ROI) from fingerprint image |
-| `preprocessing.py` | Normalizes and prepares images for enhancement filters |
-| `gabor_enhancement.py` | Applies Gabor filters for ridge-oriented enhancement |
-| `thresholding.py` | Converts enhanced grayscale images to binary format using adaptive thresholding |
-| `ridge_postprocess.py` | Final ridge enhancement, cleanup, and postprocessing |
-| `__init__.py` | Makes the pipeline folder a Python package |
-
-### Utility Modules (`utils/`)
-| File | Purpose |
-|------|---------|
-| `io_utils.py` | Image input/output utility functions (save, load, etc.) |
-| `__init__.py` | Makes the utils folder a Python package |
-
-## 🎯 Features
-
-✅ Single image processing  
-✅ Batch processing of image folders  
-✅ Automatic output directory creation  
-✅ Error handling for invalid images  
-✅ Support for multiple image formats  
-✅ Advanced fingerprint enhancement pipeline  
-✅ Ridge pattern enhancement and clarity  
-
-## 🐛 Error Handling
-
-The application includes error handling for:
-- Invalid or missing file paths
-- Unsupported image formats
-- Corrupted image files
-- Directory creation issues
-
-## 📂 Input/Output Structure
-
-### Input Directory
-```
-input/
-├── finger1.jpg                (sample fingerprint image)
-├── finger2.jpg                (sample fingerprint image)
-├── Fingers_test/              (test dataset)
-│   └── [test fingerprint images]
-└── Samarth/                   (sample dataset)
-    └── [sample fingerprint images]
-```
-
-### Output Directory
-```
-output/
-├── 01_roi.png                 (ROI extraction result)
-├── 02_gray.png                (grayscale conversion result)
-├── 03_normalized.png          (normalized image result)
-├── 04_gabor_energy.png        (Gabor enhancement result)
-├── 06_binary.png              (thresholding result)
-├── final_fingerprint.png      (final processed fingerprint)
-├── finger1.jpg                (processed sample 1)
-├── finger2.jpg                (processed sample 2)
-├── Fingers_test/              (processed test dataset)
-│   └── [processed test images]
-└── Samarth/                   (processed sample dataset)
-    └── [processed sample images]
-```
-
-## 🔬 Technical Details
-
-- **Image Format**: Processed images are saved in the same format as input
-- **Color Space**: Works with color images and converts as needed
-- **Filtering**: Uses Gabor filters for ridge-oriented enhancement
-- **Thresholding**: Adaptive thresholding for robust binarization
-
-
+The current quality value is a heuristic based on blur, contrast, brightness, and dimensions; it is not a biometric quality certification. The algorithm enhances imagery and does not extract minutiae, classify, or match identities. Results are stored locally under `backend/data/jobs` without automatic retention cleanup; protect and clear this folder appropriately because it contains biometric imagery. Browser session history keeps up to 30 result references. A future quality model, orientation/frequency maps, minutiae extraction, authenticated deployment, and retention policy can be added behind the existing service layer.
