@@ -52,6 +52,7 @@ backend/cli.py     CLI using the shared service
 backend/requirements*.txt  Backend and test dependencies
 frontend/src/      Next.js pages, reusable components, API client, types
 backend/data/jobs/ Runtime processing artifacts, excluded from Git
+backend/main.py    Starts the local FastAPI backend from `backend/` with `python main.py`
 ```
 
 ## Local setup
@@ -60,10 +61,12 @@ Requires Python 3.10+ and Node.js 20.9+. The frontend uses Next.js 16.4 and Reac
 
 ### Backend
 
-```bash
+```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
-.\.venv\Scripts\python.exe -m uvicorn backend.app.main:app --reload --port 8000
+.\.venv\Scripts\Activate.ps1
+cd backend
+python main.py
 ```
 
 Health check: <http://localhost:8000/api/v1/health>. OpenAPI docs: <http://localhost:8000/docs>.

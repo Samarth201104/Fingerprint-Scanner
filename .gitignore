@@ -31,7 +31,7 @@ frontend/build/
 frontend/.turbo/
 frontend/coverage/
 *.tsbuildinfo
-.npm-cache/
+**/.npm-cache/
 
 # Logs and OS/editor files
 *.log
