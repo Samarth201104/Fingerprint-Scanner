@@ -41,8 +41,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
 .workspaceLabel { color: var(--muted); font-size: 12px; white-space: nowrap; }
 .themeControl { display: inline-flex; min-height: 40px; align-items: center; gap: 10px; padding: 5px 7px 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); cursor: pointer; transition: border-color .16s ease, background .16s ease; }
 .themeControl:hover { border-color: var(--accent); background: var(--surface-soft); }
-.themeControlLabel { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; font-weight: 600; white-space: nowrap; }
-.themeControlLabel svg { color: var(--accent-strong); }
+.themeModeLabel { min-width: 32px; color: var(--muted); font-size: 12px; font-weight: 600; text-align: center; white-space: nowrap; }
 .themeSwitch { display: flex; width: 38px; height: 24px; align-items: center; padding: 3px; border-radius: 999px; background: var(--line); transition: background .18s ease; }
 .themeSwitchThumb { display: grid; width: 18px; height: 18px; place-items: center; border-radius: 50%; background: var(--surface); color: var(--accent-strong); box-shadow: 0 1px 3px rgb(0 0 0 / 18%); transform: translateX(0); transition: transform .18s ease; }
 .themeControl[aria-checked="true"] .themeSwitch { background: var(--accent); }
@@ -150,8 +149,7 @@ progress { width: 100%; height: 8px; accent-color: var(--accent); }
   .brand { font-size: 13px; }
   .brandIcon { width: 36px; height: 36px; }
   .brand small { font-size: 8px; letter-spacing: 1.1px; }
-  .themeControl { min-height: 38px; gap: 8px; padding: 5px; }
-  .themeControlLabel { display: none; }
+  .themeControl { min-height: 38px; gap: 7px; padding: 5px 7px; }
   .navLinks { justify-content: space-between; gap: 2px; margin: 3px -4px 0; }
   .navLinks a { min-height: 37px; padding: 0 10px; font-size: 12px; }
   main { padding: 30px 14px 48px; }

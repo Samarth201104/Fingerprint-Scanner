@@ -23,7 +23,7 @@ export default function ThemeToggle() {
   }
 
   return <button className="themeControl" type="button" role="switch" aria-checked={theme === "dark"} onClick={toggle} aria-label={`Dark theme ${theme === "dark" ? "on" : "off"}`} title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}>
-    <span className="themeControlLabel"><Sun size={15} aria-hidden="true"/><span>Appearance</span></span>
+    <span className="themeModeLabel">{theme === "light" ? "Light" : "Dark"}</span>
     <span className="themeSwitch" aria-hidden="true"><span className="themeSwitchThumb">{theme === "light" ? <Sun size={12}/> : <Moon size={12}/>}</span></span>
   </button>;
 }
