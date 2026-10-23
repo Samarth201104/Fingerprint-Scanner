@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: fingerprint-scanner-api
+    runtime: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.11
+      - key: CORS_ORIGINS
+        sync: false
+      - key: FINGERPRINT_DATA_DIR
+        value: /tmp/fingerprint-jobs
+      - key: MAX_UPLOAD_BYTES
+        value: 12582912

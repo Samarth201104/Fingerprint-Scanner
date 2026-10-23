@@ -82,12 +82,23 @@ npm run dev
 
 Open <http://localhost:3000>. Set `NEXT_PUBLIC_API_URL` in `frontend/.env.local` to the backend URL when it differs from `http://localhost:8000`. Browser camera access requires localhost or HTTPS and user permission.
 
+## Deploy frontend on Vercel and backend on Render
+
+This repository is a monorepo. Deploy the Next.js app and FastAPI service as separate projects:
+
+1. **Render backend:** Create a Blueprint from this Git repository and use the root `render.yaml`. It installs `backend/requirements.txt`, starts `backend.app.main:app` on Render's assigned port, and checks `/api/v1/health`. Set `CORS_ORIGINS` to the exact Vercel production origin, for example `https://your-project.vercel.app` (comma-separated origins are supported). For Vercel preview deployments, optionally set `CORS_ORIGIN_REGEX` to a regex matching only your project's preview domains.
+2. **Vercel frontend:** Import the same repository as a new Vercel project and set **Root Directory** to `frontend`. Keep the Next.js framework preset and default build settings. Add `NEXT_PUBLIC_API_URL` with the HTTPS URL of the Render service, without a trailing slash, for example `https://fingerprint-scanner-api.onrender.com`. Set it for Production and Preview as needed, then redeploy so the value is included in the frontend build.
+3. After both deploys finish, check `https://<render-service>.onrender.com/api/v1/health`, open the Vercel site, and process a test image.
+
+Render stores files on an ephemeral filesystem by default. This app currently saves processed fingerprint images there, so results may disappear when the service restarts or redeploys. The Blueprint uses `/tmp/fingerprint-jobs` to make that temporary behavior explicit; persistent user results require a shared object store or a supported persistent disk before scaling beyond one instance. The API also has no authentication, so add access control before using it with real biometric data or exposing it to unrestricted public traffic.
+
 ### Environment variables
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | Frontend backend base URL |
 | `CORS_ORIGINS` | localhost and 127.0.0.1 on ports 3000 and 3001 | Comma-separated allowed browser origins |
+| `CORS_ORIGIN_REGEX` | unset | Optional regex for allowed preview origins; restrict it to your Vercel project |
 | `MAX_UPLOAD_BYTES` | `12582912` | Per-image upload size limit |
 | `FINGERPRINT_DATA_DIR` | `backend/data/jobs` | Runtime result storage root |
 
