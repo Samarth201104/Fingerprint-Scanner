@@ -11,9 +11,16 @@ export function saveResult(result: ProcessingResult) {
   sessionStorage.setItem("fingerprint-history", JSON.stringify([result, ...previous.filter(item => item.job_id !== result.job_id)].slice(0, 30)));
 }
 async function request<T>(path: string, body: FormData): Promise<ApiResponse<T>> {
+  // Resolve configuration before fetch so a missing production URL is not
+  // incorrectly reported as a network/CORS failure.
+  const url = apiUrl(path);
   let response: Response;
-  try { response = await fetch(apiUrl(path), { method: "POST", body }); }
-  catch { throw new Error("Unable to connect to the processing server."); }
+  try { response = await fetch(url, { method: "POST", body }); }
+  catch {
+    throw new Error(
+      "Unable to reach the processing server. Check the deployed API URL and allow this site's origin in the backend CORS_ORIGINS setting."
+    );
+  }
   const json = await response.json();
   if (!response.ok) throw new Error(json.detail?.message || json.message || "Fingerprint processing failed.");
   return json;
