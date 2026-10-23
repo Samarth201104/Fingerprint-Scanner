@@ -22,7 +22,8 @@ export default function ThemeToggle() {
     localStorage.setItem("fingerprint-theme", next);
   }
 
-  return <button className="themeToggle" type="button" onClick={toggle} aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`} title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}>
-    {theme === "light" ? <Moon size={16} aria-hidden="true"/> : <Sun size={16} aria-hidden="true"/>}<span>{theme === "light" ? "Dark" : "Light"}</span>
+  return <button className="themeControl" type="button" role="switch" aria-checked={theme === "dark"} onClick={toggle} aria-label={`Dark theme ${theme === "dark" ? "on" : "off"}`} title={`Switch to ${theme === "light" ? "dark" : "light"} theme`}>
+    <span className="themeControlLabel"><Sun size={15} aria-hidden="true"/><span>Appearance</span></span>
+    <span className="themeSwitch" aria-hidden="true"><span className="themeSwitchThumb">{theme === "light" ? <Sun size={12}/> : <Moon size={12}/>}</span></span>
   </button>;
 }
