@@ -1,10 +1,12 @@
 import asyncio
+import os
 
 import cv2
 import httpx
 import numpy as np
 
 from backend.app.main import app
+from backend.app.services.fingerprint_service import cleanup_expired_jobs
 
 
 async def _request(method: str, path: str, **kwargs):
@@ -34,6 +36,24 @@ def test_cors_allows_next_dev_server_on_port_3001():
     response = request("GET", "/api/v1/health", headers={"Origin": "http://localhost:3001"})
     assert response.status_code == 200
     assert response.headers["access-control-allow-origin"] == "http://localhost:3001"
+
+
+def test_expired_job_cleanup_only_removes_old_job_directories(tmp_path):
+    expired = tmp_path / ("a" * 32)
+    recent = tmp_path / ("b" * 32)
+    unrelated = tmp_path / "user-files"
+    for directory in (expired, recent, unrelated):
+        directory.mkdir()
+        (directory / "result.json").write_text("{}", encoding="utf-8")
+    old_time = 1_000_000
+    os.utime(expired, (old_time, old_time))
+
+    removed = cleanup_expired_jobs(tmp_path, now=old_time + 2 * 60 * 60, ttl_hours=1)
+
+    assert removed == 1
+    assert not expired.exists()
+    assert recent.exists()
+    assert unrelated.exists()
 
 
 def test_invalid_upload_has_structured_error():

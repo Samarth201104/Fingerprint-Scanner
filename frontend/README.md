@@ -4,8 +4,8 @@ Next.js App Router client for the local FastAPI service.
 
 ```bash
 npm install
-copy .env.example .env.local
+cp .env.example .env.local
 npm run dev
 ```
 
-Set `NEXT_PUBLIC_API_URL` to the backend origin (default `http://localhost:8000`). Camera capture requires browser permission and localhost or HTTPS. Production output can be checked with `npm run build`.
+Set `NEXT_PUBLIC_API_URL` in `.env.local` to `http://localhost:8000` for local development, or to the Render service URL for deployment. The `.env.example` uses a production placeholder; replace it before running locally. Camera capture requires browser permission and localhost or HTTPS. Production output can be checked with `npm run build`.

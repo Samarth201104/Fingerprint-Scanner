@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import logging
+import re
+import shutil
 import time
 import uuid
 from pathlib import Path
@@ -14,7 +17,37 @@ from backend.pipeline.ridge_postprocess import postprocess
 from backend.pipeline.roi_extraction import extract_roi
 from backend.pipeline.thresholding import adaptive_threshold
 from backend.app.services.validation_service import inspect_quality
-from backend.app.core.config import DATA_DIR
+from backend.app.core.config import DATA_DIR, FINGERPRINT_JOB_TTL_HOURS
+
+logger = logging.getLogger(__name__)
+
+
+def cleanup_expired_jobs(data_dir: Path = DATA_DIR, now: float | None = None, ttl_hours: int = FINGERPRINT_JOB_TTL_HOURS) -> int:
+    """Remove only expired job directories; cleanup errors must not fail processing."""
+    if ttl_hours <= 0:
+        return 0
+    try:
+        entries = list(data_dir.iterdir())
+    except FileNotFoundError:
+        return 0
+    except OSError:
+        logger.warning("Could not list fingerprint job directory %s", data_dir, exc_info=True)
+        return 0
+
+    cutoff = (time.time() if now is None else now) - ttl_hours * 60 * 60
+    removed = 0
+    for entry in entries:
+        if not entry.is_dir() or not re.fullmatch(r"[0-9a-f]{32}", entry.name):
+            continue
+        try:
+            if entry.stat().st_mtime < cutoff:
+                shutil.rmtree(entry)
+                removed += 1
+        except OSError:
+            logger.warning("Could not remove expired fingerprint job %s", entry, exc_info=True)
+    if removed:
+        logger.info("Removed %s expired fingerprint job(s)", removed)
+    return removed
 
 
 class FingerprintService:
@@ -41,6 +74,7 @@ class FingerprintService:
         quality = inspect_quality(source_gray)
 
         job_id = uuid.uuid4().hex
+        cleanup_expired_jobs()
         images = {"original": image, "roi": roi, "preprocessed": normalized, "enhanced": enhanced, "binary": binary, "final": final}
         job_dir = DATA_DIR / job_id
         job_dir.mkdir(parents=True, exist_ok=True)
