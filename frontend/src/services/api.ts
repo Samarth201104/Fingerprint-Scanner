@@ -1,7 +1,7 @@
 import type { ApiResponse, ProcessingResult, BatchResult } from "@/types/api";
-const API = (process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === "development" ? "http://localhost:8000" : "")).replace(/\/+$/, "");
+const API = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
 function apiUrl(path: string) {
-  if (!API) throw new Error("Set NEXT_PUBLIC_API_URL to the deployed backend URL.");
+  if (!API) throw new Error("Image processing isn't configured yet. Please contact the site administrator.");
   return `${API}${path}`;
 }
 export function resolveImageUrl(path: string) { return /^https?:\/\//i.test(path) ? path : apiUrl(path); }
@@ -17,12 +17,12 @@ async function request<T>(path: string, body: FormData): Promise<ApiResponse<T>>
   let response: Response;
   try { response = await fetch(url, { method: "POST", body }); }
   catch {
-    throw new Error(
-      "Unable to reach the processing server. Check the deployed API URL and allow this site's origin in the backend CORS_ORIGINS setting."
-    );
+    throw new Error("Unable to reach the image processing service. Check your connection and try again.");
   }
-  const json = await response.json();
-  if (!response.ok) throw new Error(json.detail?.message || json.message || "Fingerprint processing failed.");
+  let json: ApiResponse<T> & { detail?: { message?: string }; message?: string };
+  try { json = await response.json(); }
+  catch { throw new Error("The processing service returned an unreadable response. Please try again."); }
+  if (!response.ok) throw new Error(json.detail?.message || json.message || "We couldn't process this image. Try a clearer capture.");
   return json;
 }
 export async function processImage(file: File, mode = "upload") { const form = new FormData(); form.append("file", file); form.append("input_mode", mode); return (await request<ProcessingResult>("/api/v1/fingerprint/process", form)).data; }
